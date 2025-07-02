@@ -34,6 +34,18 @@ describe("createStorage", () => {
     storage.delete();
     expect(storage.get()).toBeUndefined();
   });
+  it("should support schemas that transform the value", () => {
+    const storage = createStorage(
+      "count",
+      v.pipe(
+        v.number(),
+        v.transform((count) => ({ count })),
+      ),
+    );
+    storage.set(1);
+    expect(localStorage.getItem("count")).toMatchInlineSnapshot(`"1"`);
+    expect(storage.get()).toEqual({ count: 1 });
+  });
 });
 
 describe("buildStorageCreator", () => {
@@ -57,7 +69,9 @@ describe("buildStorageCreator", () => {
   });
   it("should set value in sessionStorage", () => {
     storage.set(new Set([1]));
-    expect(sessionStorage.getItem("count")).toMatchInlineSnapshot(`"{"json":[1],"meta":{"values":["set"]}}"`);
+    expect(sessionStorage.getItem("count")).toMatchInlineSnapshot(
+      `"{"json":[1],"meta":{"values":["set"]}}"`,
+    );
   });
   it("should retrieve storage if set", () => {
     storage.set(new Set([1]));

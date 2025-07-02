@@ -37,6 +37,19 @@ describe("createAsyncStorage", () => {
     await storage.delete();
     await expect(storage.get()).resolves.toBeUndefined();
   });
+
+  it("should support schemas that transform the value", async () => {
+    const storage = createAsyncStorage(
+      "count",
+      v.pipe(
+        v.number(),
+        v.transform((count) => ({ count })),
+      ),
+    );
+    await storage.set(1);
+    expect(localStorage.getItem("count")).toMatchInlineSnapshot(`"1"`);
+    await expect(storage.get()).resolves.toEqual({ count: 1 });
+  });
 });
 
 const asyncSessionStorage: UnsafeAsyncStorage = {

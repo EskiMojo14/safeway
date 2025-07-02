@@ -10,7 +10,7 @@ export interface UnsafeStorage {
 
 export interface Storage<TSchema extends StandardSchemaV1> {
   get(): StandardSchemaV1.InferOutput<TSchema> | undefined;
-  set(value: StandardSchemaV1.InferOutput<TSchema>): void;
+  set(value: StandardSchemaV1.InferInput<TSchema>): void;
   delete(): void;
 }
 
@@ -50,7 +50,7 @@ export function buildStorageCreator(creatorConfig?: BuildStorageCreatorConfig) {
         if (value == null) return;
         return parseSync(schema, serializer.parse(value));
       },
-      set(value: StandardSchemaV1.InferOutput<TSchema>) {
+      set(value) {
         storage.setItem(key, serializer.stringify(value));
       },
       delete() {

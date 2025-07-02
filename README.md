@@ -1,6 +1,6 @@
 # safe-storage
 
-A type safe wrapper for string storage APIs like `localStorage` and `sessionStorage`, using [Standard Schema](https://standardschema.dev/#what-schema-libraries-implement-the-spec) for validation. Includes serialisation and deserialisation methods for non-string values.
+A type-safe serialisation and validation wrapper for string storage APIs like `localStorage` and `sessionStorage`, using [Standard Schema](https://standardschema.dev/#what-schema-libraries-implement-the-spec) for validation.
 
 ## Installation
 
@@ -10,9 +10,9 @@ npm install safe-storage
 
 ## Usage
 
-_Note_: Schema is only used for validation when getting value from storage. When _setting_ a value, no runtime validation happens, only TypeScript type checking.
-
 ### Synchronous Storage
+
+To create a type safe storage, provide a key and a schema. The key will be where the value is stored, and the schema will be used to validate the value when getting it from storage. (When _setting_ a value, no runtime validation happens, only TypeScript type checking.)
 
 Defaults to `localStorage` and `JSON` serialisation.
 
@@ -22,8 +22,8 @@ import { z } from "zod";
 
 const storage = createStorage("count", z.number());
 
-storage.set(1); // typed based on schema
-console.log(storage.get()); // typed based on schema
+storage.set(1); // typed based on schema input
+console.log(storage.get()); // typed based on schema output
 
 storage.delete();
 console.log(storage.get()); // undefined
@@ -88,8 +88,8 @@ const storage = createAsyncStorage("count", z.number(), {
   storage: AsyncStorage,
 });
 
-await storage.set(1); // typed based on schema
-console.log(await storage.get()); // typed based on schema
+await storage.set(1); // typed based on schema input
+console.log(await storage.get()); // typed based on schema output
 
 await storage.delete();
 console.log(await storage.get()); // undefined

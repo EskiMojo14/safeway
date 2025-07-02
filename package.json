@@ -1,5 +1,5 @@
 {
-  "name": "safe-storage",
+  "name": "safeway",
   "version": "1.0.0",
   "description": "Type-safe serialisation and validation wrapper for string storage APIs",
   "scripts": {

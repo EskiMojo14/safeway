@@ -14,7 +14,7 @@ export interface Storage<TSchema extends StandardSchemaV1> {
   delete(): void;
 }
 
-interface BuildStorageCreatorConfig {
+interface BuildStoreCreatorConfig {
   /**
    * Methods to serialize and deserialize values.
    * @default JSON
@@ -27,11 +27,11 @@ interface BuildStorageCreatorConfig {
   storage?: UnsafeStorage;
 }
 
-export function buildStorageCreator(creatorConfig?: BuildStorageCreatorConfig) {
-  return function createStorage<TSchema extends StandardSchemaV1>(
+export function buildStoreCreator(creatorConfig?: BuildStoreCreatorConfig) {
+  return function createStore<TSchema extends StandardSchemaV1>(
     key: string,
     schema: TSchema,
-    config?: BuildStorageCreatorConfig,
+    config?: BuildStoreCreatorConfig,
   ): Storage<TSchema> {
     const { serializer = JSON, storage = localStorage } = Object.assign(
       {},
@@ -54,4 +54,4 @@ export function buildStorageCreator(creatorConfig?: BuildStorageCreatorConfig) {
   };
 }
 
-export const createStorage = buildStorageCreator();
+export const createStore = buildStoreCreator();

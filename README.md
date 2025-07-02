@@ -1,32 +1,47 @@
-# safe-storage
+# safeway
 
 A type-safe serialisation and validation wrapper for string storage APIs like `localStorage` and `sessionStorage`, using [Standard Schema](https://standardschema.dev/#what-schema-libraries-implement-the-spec) for validation.
 
 ## Installation
 
 ```bash
-npm install safe-storage
+npm install safeway
 ```
 
 ## Usage
 
 ### Synchronous Storage
 
-To create a type safe storage, provide a key and a schema. The key will be where the value is stored, and the schema will be used to validate the value when getting it from storage. (When _setting_ a value, no runtime validation happens, only TypeScript type checking.)
+To create a type safe store, provide a key and a schema. The key will be where the value is stored, and the schema will be used to validate the value when getting it from storage. (When _setting_ a value, no runtime validation happens, only TypeScript type checking.)
 
 Defaults to `localStorage` and `JSON` serialisation.
 
 ```ts
-import { createStorage } from "safe-storage";
+import { createStore } from "safeway";
 import { z } from "zod";
 
-const storage = createStorage("count", z.number());
+const store = createStore("count", z.number());
 
-storage.set(1); // typed based on schema input
-console.log(storage.get()); // typed based on schema output
+store.set(1); // typed based on schema input (number)
+console.log(store.get()); // 1 - typed based on schema output (number | undefined)
 
-storage.delete();
-console.log(storage.get()); // undefined
+store.delete();
+console.log(store.get()); // undefined (still typed as number | undefined)
+```
+
+Schemas are allowed to include transformations, in which case `store.set`'s parameter will be based on the schema's expected _input_.
+
+```ts
+import { createStore } from "safeway";
+import { z } from "zod";
+
+const store = createStore("count", z.number());
+
+store.set(1); // typed based on schema input (number)
+console.log(store.get()); // 1 - typed based on schema output (number | undefined)
+
+store.delete();
+console.log(store.get()); // undefined (still typed as number | undefined)
 ```
 
 #### Custom serialisation
@@ -34,11 +49,11 @@ console.log(storage.get()); // undefined
 If JSON doesn't cover all your needs, you can provide your own serialisation methods (or use a compatible library like [superjson](https://github.com/blitz-js/superjson)). Should include `parse` and `stringify` methods.
 
 ```ts
-import { createStorage } from "safe-storage";
+import { createStore } from "safeway";
 import { z } from "zod";
 import superjson from "superjson";
 
-const storage = createStorage("counts", z.set(z.number()), {
+const store = createStore("counts", z.set(z.number()), {
   serializer: superjson,
 });
 ```
@@ -48,51 +63,53 @@ const storage = createStorage("counts", z.set(z.number()), {
 If you want to use a different storage API, you can provide it. Should include `getItem`, `setItem` and `removeItem` methods.
 
 ```ts
-import { createStorage } from "safe-storage";
+import { createStore } from "safeway";
 import { z } from "zod";
 
-const storage = createStorage("count", z.number(), {
+const store = createStore("count", z.number(), {
   storage: sessionStorage,
 });
 ```
 
-### Building a custom storage creator
+### Building a custom store creator
 
-Instead of providing the same config every time, you can build a custom storage creator with your own defaults.
+Instead of providing the same config every time, you can build a custom store creator with your own defaults.
 
 ```ts
-import { buildStorageCreator } from "safe-storage";
+import { buildStoreCreator } from "safeway";
 import { z } from "zod";
 import superjson from "superjson";
 
-const createStorage = buildStorageCreator({
+const createSuperStore = buildStoreCreator({
   serializer: superjson,
   storage: sessionStorage,
 });
 
-const storage = createStorage("count", z.number());
+const store = createSuperStore("count", z.number());
 ```
 
 ### Asynchronous Storage
 
-`createStorage` requires both storage and schemas to be synchronous. If you need asynchronous storage and/or schemas, use `createAsyncStorage` instead.
+`createStore` requires both storage and schemas to be synchronous. If you need asynchronous storage and/or schemas, use `createAsyncStore` instead.
+
+The API is the same as `createStore`, but all methods return promises.
 
 Defaults to `localStorage` and `JSON` serialisation.
 
 ```ts
-import { createAsyncStorage } from "safe-storage";
+import { createAsyncStore } from "safeway";
 import { z } from "zod";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const storage = createAsyncStorage("count", z.number(), {
+const store = createAsyncStore("count", z.number(), {
   storage: AsyncStorage,
 });
 
-await storage.set(1); // typed based on schema input
-console.log(await storage.get()); // typed based on schema output
+await store.set(1); // typed based on schema input (number)
+console.log(await store.get()); // 1 - typed based on schema output (number | undefined)
 
-await storage.delete();
-console.log(await storage.get()); // undefined
+await store.delete();
+console.log(await store.get()); // undefined (still typed as number | undefined)
 ```
 
-Supports all the same customisation options as the synchronous storage, but with asynchronous storage methods allowed. A storage creator can be built with `buildAsyncStorageCreator`.
+Supports all the same customisation options as the synchronous storage, but with asynchronous storage methods allowed. A store creator can be built with `buildAsyncStoreCreator`.

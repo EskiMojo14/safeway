@@ -2,86 +2,86 @@
 import superjson from "superjson";
 import * as v from "valibot";
 import { describe, it, expect, beforeEach } from "vitest";
-import { buildStorageCreator, createStorage } from "./sync";
+import { buildStoreCreator, createStore } from "./sync";
 
-describe("createStorage", () => {
+describe("createStore", () => {
   beforeEach(() => {
     localStorage.clear();
   });
-  const storage = createStorage("count", v.number());
-  it("should create a storage", () => {
-    expect(storage).toMatchObject({
+  const store = createStore("count", v.number());
+  it("should create a store", () => {
+    expect(store).toMatchObject({
       get: expect.any(Function),
       set: expect.any(Function),
       delete: expect.any(Function),
     });
   });
   it("should retrieve undefined if not set", () => {
-    expect(storage.get()).toBeUndefined();
+    expect(store.get()).toBeUndefined();
   });
   it("should set value in localStorage", () => {
-    storage.set(1);
+    store.set(1);
     expect(localStorage.getItem("count")).toMatchInlineSnapshot(`"1"`);
   });
-  it("should retrieve storage if set", () => {
-    storage.set(1);
-    expect(storage.get()).toBe(1);
+  it("should retrieve value if set", () => {
+    store.set(1);
+    expect(store.get()).toBe(1);
   });
-  it("should delete storage", () => {
-    storage.set(1);
-    expect(storage.get()).toBe(1);
+  it("should delete value", () => {
+    store.set(1);
+    expect(store.get()).toBe(1);
 
-    storage.delete();
-    expect(storage.get()).toBeUndefined();
+    store.delete();
+    expect(store.get()).toBeUndefined();
   });
   it("should support schemas that transform the value", () => {
-    const storage = createStorage(
+    const store = createStore(
       "count",
       v.pipe(
         v.number(),
         v.transform((count) => ({ count })),
       ),
     );
-    storage.set(1);
+    store.set(1);
     expect(localStorage.getItem("count")).toMatchInlineSnapshot(`"1"`);
-    expect(storage.get()).toEqual({ count: 1 });
+    expect(store.get()).toEqual({ count: 1 });
   });
 });
 
-describe("buildStorageCreator", () => {
+describe("buildStoreCreator", () => {
   beforeEach(() => {
     sessionStorage.clear();
   });
-  const createSuperStorage = buildStorageCreator({
+  const createSuperStore = buildStoreCreator({
     serializer: superjson,
     storage: sessionStorage,
   });
-  const storage = createSuperStorage("count", v.set(v.number()));
-  it("should create a storage", () => {
-    expect(storage).toMatchObject({
+  const store = createSuperStore("counts", v.set(v.number()));
+  it("should create a store", () => {
+    expect(store).toMatchObject({
       get: expect.any(Function),
       set: expect.any(Function),
       delete: expect.any(Function),
     });
   });
   it("should retrieve undefined if not set", () => {
-    expect(storage.get()).toBeUndefined();
+    expect(store.get()).toBeUndefined();
   });
   it("should set value in sessionStorage", () => {
-    storage.set(new Set([1]));
-    expect(sessionStorage.getItem("count")).toMatchInlineSnapshot(
+    store.set(new Set([1]));
+    expect(sessionStorage.getItem("counts")).toMatchInlineSnapshot(
       `"{"json":[1],"meta":{"values":["set"]}}"`,
     );
   });
-  it("should retrieve storage if set", () => {
-    storage.set(new Set([1]));
-    expect(storage.get()).toEqual(new Set([1]));
+  it("should retrieve value if set", () => {
+    store.set(new Set([1]));
+    expect(store.get()).toEqual(new Set([1]));
   });
-  it("should delete storage", () => {
-    storage.set(new Set([1]));
-    expect(storage.get()).toEqual(new Set([1]));
+  it("should delete value", () => {
+    store.set(new Set([1]));
+    expect(store.get()).toEqual(new Set([1]));
 
-    storage.delete();
-    expect(storage.get()).toBeUndefined();
+    store.delete();
+    expect(store.get()).toBeUndefined();
   });
 });

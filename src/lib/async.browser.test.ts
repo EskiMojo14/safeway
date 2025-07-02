@@ -3,43 +3,43 @@ import superjson from "superjson";
 import * as v from "valibot";
 import { describe, it, expect, beforeEach } from "vitest";
 import type { UnsafeAsyncStorage } from "./async";
-import { buildAsyncStorageCreator, createAsyncStorage } from "./async";
+import { buildAsyncStoreCreator, createAsyncStore } from "./async";
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-describe("createAsyncStorage", () => {
+describe("createAsyncStore", () => {
   beforeEach(() => {
     localStorage.clear();
   });
-  const storage = createAsyncStorage("count", v.number());
-  it("should create a storage", () => {
-    expect(storage).toMatchObject({
+  const store = createAsyncStore("count", v.number());
+  it("should create a store", () => {
+    expect(store).toMatchObject({
       get: expect.any(Function),
       set: expect.any(Function),
       delete: expect.any(Function),
     });
   });
   it("should retrieve undefined if not set", async () => {
-    await expect(storage.get()).resolves.toBeUndefined();
+    await expect(store.get()).resolves.toBeUndefined();
   });
   it("should set value in localStorage", async () => {
-    await storage.set(1);
+    await store.set(1);
     expect(localStorage.getItem("count")).toMatchInlineSnapshot(`"1"`);
   });
-  it("should retrieve storage if set", async () => {
-    await storage.set(1);
-    await expect(storage.get()).resolves.toBe(1);
+  it("should retrieve value if set", async () => {
+    await store.set(1);
+    await expect(store.get()).resolves.toBe(1);
   });
-  it("should delete storage", async () => {
-    await storage.set(1);
-    await expect(storage.get()).resolves.toBe(1);
+  it("should delete value", async () => {
+    await store.set(1);
+    await expect(store.get()).resolves.toBe(1);
 
-    await storage.delete();
-    await expect(storage.get()).resolves.toBeUndefined();
+    await store.delete();
+    await expect(store.get()).resolves.toBeUndefined();
   });
 
   it("should support schemas that transform the value", async () => {
-    const storage = createAsyncStorage(
+    const storage = createAsyncStore(
       "count",
       v.pipe(
         v.number(),
@@ -67,42 +67,42 @@ const asyncSessionStorage: UnsafeAsyncStorage = {
   },
 };
 
-describe("buildAsyncStorageCreator", () => {
+describe("buildAsyncStoreCreator", () => {
   beforeEach(() => {
     sessionStorage.clear();
   });
-  const createSuperStorage = buildAsyncStorageCreator({
+  const createSuperStorage = buildAsyncStoreCreator({
     serializer: superjson,
     storage: asyncSessionStorage,
   });
-  const storage = createSuperStorage("count", v.set(v.number()));
-  it("should create a storage", () => {
-    expect(storage).toMatchObject({
+  const store = createSuperStorage("count", v.set(v.number()));
+  it("should create a store", () => {
+    expect(store).toMatchObject({
       get: expect.any(Function),
       set: expect.any(Function),
       delete: expect.any(Function),
     });
   });
   it("should retrieve undefined if not set", async () => {
-    await expect(storage.get()).resolves.toBeUndefined();
+    await expect(store.get()).resolves.toBeUndefined();
   });
   it("should set value in sessionStorage", async () => {
-    await storage.set(new Set([1]));
+    await store.set(new Set([1]));
     await expect(
       asyncSessionStorage.getItem("count"),
     ).resolves.toMatchInlineSnapshot(
       `"{"json":[1],"meta":{"values":["set"]}}"`,
     );
   });
-  it("should retrieve storage if set", async () => {
-    await storage.set(new Set([1]));
-    await expect(storage.get()).resolves.toEqual(new Set([1]));
+  it("should retrieve value if set", async () => {
+    await store.set(new Set([1]));
+    await expect(store.get()).resolves.toEqual(new Set([1]));
   });
-  it("should delete storage", async () => {
-    await storage.set(new Set([1]));
-    await expect(storage.get()).resolves.toEqual(new Set([1]));
+  it("should delete value", async () => {
+    await store.set(new Set([1]));
+    await expect(store.get()).resolves.toEqual(new Set([1]));
 
-    await storage.delete();
-    await expect(storage.get()).resolves.toBeUndefined();
+    await store.delete();
+    await expect(store.get()).resolves.toBeUndefined();
   });
 });

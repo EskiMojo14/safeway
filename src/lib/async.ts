@@ -14,7 +14,7 @@ export interface AsyncStorage<TSchema extends StandardSchemaV1> {
   delete(): Promise<void>;
 }
 
-interface BuildAsyncStorageCreatorConfig {
+interface BuildAsyncStoreCreatorConfig {
   /**
    * Methods to serialize and deserialize values.
    * @default JSON
@@ -27,13 +27,13 @@ interface BuildAsyncStorageCreatorConfig {
   storage?: UnsafeAsyncStorage;
 }
 
-export function buildAsyncStorageCreator(
-  creatorConfig?: BuildAsyncStorageCreatorConfig,
+export function buildAsyncStoreCreator(
+  creatorConfig?: BuildAsyncStoreCreatorConfig,
 ) {
-  return function createAsyncStorage<TSchema extends StandardSchemaV1>(
+  return function createAsyncStore<TSchema extends StandardSchemaV1>(
     key: string,
     schema: TSchema,
-    config?: BuildAsyncStorageCreatorConfig,
+    config?: BuildAsyncStoreCreatorConfig,
   ): AsyncStorage<TSchema> {
     const { serializer = JSON, storage = localStorage } = Object.assign(
       {},
@@ -56,4 +56,4 @@ export function buildAsyncStorageCreator(
   };
 }
 
-export const createAsyncStorage = buildAsyncStorageCreator();
+export const createAsyncStore = buildAsyncStoreCreator();

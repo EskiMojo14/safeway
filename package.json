@@ -1,0 +1,75 @@
+{
+  "name": "safe-storage",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "prepare": "husky",
+    "prebuild": "pnpm run type",
+    "build": "tsdown",
+    "test": "vitest",
+    "lint": "eslint",
+    "format": "prettier",
+    "pre-commit": "lint-staged",
+    "attw": "attw",
+    "publint": "publint",
+    "type": "tsc",
+    "prepack": "pnpm run publint"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.12.4",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "prettier": {},
+  "lint-staged": {
+    "*.{ts,md}": "prettier --write"
+  },
+  "tsdown": {
+    "entry": [
+      "src/index.ts",
+      "src/async.ts"
+    ],
+    "sourcemap": true,
+    "format": [
+      "esm",
+      "cjs"
+    ],
+    "dts": true
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.2",
+    "@eslint/js": "^9.30.1",
+    "@typescript-eslint/parser": "^8.35.1",
+    "eslint": "^9.30.1",
+    "eslint-import-resolver-typescript": "^4.4.4",
+    "eslint-plugin-import-x": "^4.16.1",
+    "eslint-plugin-vitest": "^0.5.4",
+    "globals": "^16.3.0",
+    "husky": "^9.1.7",
+    "jiti": "^2.4.2",
+    "lint-staged": "^16.1.2",
+    "prettier": "^3.6.2",
+    "publint": "^0.3.12",
+    "tsdown": "^0.12.9",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.35.1",
+    "vitest": "^3.2.4"
+  },
+  "dependencies": {
+    "@standard-schema/spec": "^1.0.0",
+    "@standard-schema/utils": "^0.3.0"
+  }
+}

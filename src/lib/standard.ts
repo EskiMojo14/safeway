@@ -6,12 +6,9 @@ export function parseSync<TSchema extends StandardSchemaV1>(
   input: unknown,
 ): StandardSchemaV1.InferOutput<TSchema> {
   const result = schema["~standard"].validate(input);
-  if (result instanceof Promise) {
+  if (result instanceof Promise)
     throw new TypeError("Schema validation must be synchronous");
-  }
-  if (result.issues) {
-    throw new SchemaError(result.issues);
-  }
+  if (result.issues) throw new SchemaError(result.issues);
   return result.value;
 }
 
@@ -20,8 +17,6 @@ export async function parse<TSchema extends StandardSchemaV1>(
   input: unknown,
 ): Promise<StandardSchemaV1.InferOutput<TSchema>> {
   const result = await schema["~standard"].validate(input);
-  if (result.issues) {
-    throw new SchemaError(result.issues);
-  }
+  if (result.issues) throw new SchemaError(result.issues);
   return result.value;
 }

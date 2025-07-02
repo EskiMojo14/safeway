@@ -27,11 +27,6 @@ interface BuildAsyncStorageCreatorConfig {
   storage?: UnsafeAsyncStorage;
 }
 
-const defaults: Required<BuildAsyncStorageCreatorConfig> = {
-  serializer: JSON,
-  storage: localStorage,
-};
-
 export function buildAsyncStorageCreator(
   creatorConfig?: BuildAsyncStorageCreatorConfig,
 ) {
@@ -40,9 +35,8 @@ export function buildAsyncStorageCreator(
     schema: TSchema,
     config?: BuildAsyncStorageCreatorConfig,
   ): AsyncStorage<TSchema> {
-    const { serializer, storage } = Object.assign(
+    const { serializer = JSON, storage = localStorage } = Object.assign(
       {},
-      defaults,
       creatorConfig,
       config,
     );

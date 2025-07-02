@@ -27,20 +27,14 @@ interface BuildStorageCreatorConfig {
   storage?: UnsafeStorage;
 }
 
-const defaults: Required<BuildStorageCreatorConfig> = {
-  serializer: JSON,
-  storage: localStorage,
-};
-
 export function buildStorageCreator(creatorConfig?: BuildStorageCreatorConfig) {
   return function createStorage<TSchema extends StandardSchemaV1>(
     key: string,
     schema: TSchema,
     config?: BuildStorageCreatorConfig,
   ): Storage<TSchema> {
-    const { serializer, storage } = Object.assign(
+    const { serializer = JSON, storage = localStorage } = Object.assign(
       {},
-      defaults,
       creatorConfig,
       config,
     );

@@ -20,6 +20,15 @@ export default defineConfig({
           },
         },
       },
+      {
+        test: {
+          name: "typecheck",
+          typecheck: {
+            enabled: true,
+            only: true,
+          },
+        },
+      },
     ],
   },
 });

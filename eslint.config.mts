@@ -24,6 +24,9 @@ export default tseslint.config(
         ecmaFeatures: { jsx: true },
       },
     },
+    linterOptions: {
+      reportUnusedDisableDirectives: "error",
+    },
     settings: {},
   },
   pluginJs.configs.recommended,

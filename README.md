@@ -35,13 +35,13 @@ Schemas are allowed to include transformations, in which case `store.set`'s para
 import { createStore } from "safeway";
 import { z } from "zod";
 
-const store = createStore("count", z.number());
+const store = createStore(
+  "count",
+  z.number().transform((count) => ({ count })),
+);
 
 store.set(1); // typed based on schema input (number)
-console.log(store.get()); // 1 - typed based on schema output (number | undefined)
-
-store.delete();
-console.log(store.get()); // undefined (still typed as number | undefined)
+console.log(store.get()); // { count: 1 } - typed based on schema output ({ count: number } | undefined)
 ```
 
 #### Custom serialisation

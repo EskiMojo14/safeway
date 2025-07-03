@@ -14,7 +14,7 @@ describe("createStore", () => {
     expect(store).toMatchObject({
       get: expect.any(Function),
       set: expect.any(Function),
-      delete: expect.any(Function),
+      remove: expect.any(Function),
     });
   });
   it("should retrieve undefined if not set", () => {
@@ -32,7 +32,7 @@ describe("createStore", () => {
     store.set(1);
     expect(store.get()).toBe(1);
 
-    store.delete();
+    store.remove();
     expect(store.get()).toBeUndefined();
   });
   it("should support schemas that transform the value", () => {
@@ -78,7 +78,7 @@ describe("buildStoreCreator", () => {
     expect(store).toMatchObject({
       get: expect.any(Function),
       set: expect.any(Function),
-      delete: expect.any(Function),
+      remove: expect.any(Function),
     });
   });
   it("should retrieve undefined if not set", () => {
@@ -98,7 +98,7 @@ describe("buildStoreCreator", () => {
     store.set(new Set([1]));
     expect(store.get()).toEqual(new Set([1]));
 
-    store.delete();
+    store.remove();
     expect(store.get()).toBeUndefined();
   });
 });

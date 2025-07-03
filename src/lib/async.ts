@@ -11,7 +11,7 @@ export interface UnsafeAsyncStorage {
 export interface AsyncStorage<TSchema extends StandardSchemaV1> {
   get(): Promise<StandardSchemaV1.InferOutput<TSchema> | undefined>;
   set(value: StandardSchemaV1.InferInput<TSchema>): Promise<void>;
-  delete(): Promise<void>;
+  remove(): Promise<void>;
 }
 
 interface BuildAsyncStoreCreatorConfig {
@@ -49,7 +49,7 @@ export function buildAsyncStoreCreator(
       async set(value) {
         await storage.setItem(key, serializer.stringify(value));
       },
-      async delete() {
+      async remove() {
         await storage.removeItem(key);
       },
     };

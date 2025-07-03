@@ -15,7 +15,7 @@ describe("createAsyncStore", () => {
     expect(store).toMatchObject({
       get: expect.any(Function),
       set: expect.any(Function),
-      delete: expect.any(Function),
+      remove: expect.any(Function),
     });
   });
   it("should retrieve undefined if not set", async () => {
@@ -33,7 +33,7 @@ describe("createAsyncStore", () => {
     await store.set(1);
     await expect(store.get()).resolves.toBe(1);
 
-    await store.delete();
+    await store.remove();
     await expect(store.get()).resolves.toBeUndefined();
   });
 
@@ -79,7 +79,7 @@ describe("buildAsyncStoreCreator", () => {
     expect(store).toMatchObject({
       get: expect.any(Function),
       set: expect.any(Function),
-      delete: expect.any(Function),
+      remove: expect.any(Function),
     });
   });
   it("should retrieve undefined if not set", async () => {
@@ -101,7 +101,7 @@ describe("buildAsyncStoreCreator", () => {
     await store.set(new Set([1]));
     await expect(store.get()).resolves.toEqual(new Set([1]));
 
-    await store.delete();
+    await store.remove();
     await expect(store.get()).resolves.toBeUndefined();
   });
 });

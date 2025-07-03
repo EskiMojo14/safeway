@@ -25,7 +25,7 @@ const store = createStore("count", z.number());
 store.set(1); // typed based on schema input (number)
 console.log(store.get()); // 1 - typed based on schema output (number | undefined)
 
-store.delete();
+store.remove();
 console.log(store.get()); // undefined (still typed as number | undefined)
 ```
 
@@ -108,7 +108,7 @@ const store = createAsyncStore("count", z.number(), {
 await store.set(1); // typed based on schema input (number)
 console.log(await store.get()); // 1 - typed based on schema output (number | undefined)
 
-await store.delete();
+await store.remove();
 console.log(await store.get()); // undefined (still typed as number | undefined)
 ```
 

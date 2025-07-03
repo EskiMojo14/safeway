@@ -11,7 +11,7 @@ export interface UnsafeStorage {
 export interface Storage<TSchema extends StandardSchemaV1> {
   get(): StandardSchemaV1.InferOutput<TSchema> | undefined;
   set(value: StandardSchemaV1.InferInput<TSchema>): void;
-  delete(): void;
+  remove(): void;
 }
 
 interface BuildStoreCreatorConfig {
@@ -47,7 +47,7 @@ export function buildStoreCreator(creatorConfig?: BuildStoreCreatorConfig) {
       set(value) {
         storage.setItem(key, serializer.stringify(value));
       },
-      delete() {
+      remove() {
         storage.removeItem(key);
       },
     };

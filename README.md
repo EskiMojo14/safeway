@@ -60,7 +60,7 @@ const store = createStore("counts", z.set(z.number()), {
 
 #### Custom storage
 
-If you want to use a different storage API, you can provide it. Should include `getItem`, `setItem` and `removeItem` methods.
+If you want to use a different storage instance, you can provide it. Should include `getItem`, `setItem` and `removeItem` methods.
 
 ```ts
 import { createStore } from "safeway";

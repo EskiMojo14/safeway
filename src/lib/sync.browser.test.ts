@@ -3,6 +3,7 @@ import superjson from "superjson";
 import * as v from "valibot";
 import { describe, it, expect, beforeEach } from "vitest";
 import { buildStoreCreator, createStore } from "./sync";
+import { wait } from "./utils";
 
 describe("createStore", () => {
   beforeEach(() => {
@@ -45,6 +46,22 @@ describe("createStore", () => {
     store.set(1);
     expect(localStorage.getItem("count")).toMatchInlineSnapshot(`"1"`);
     expect(store.get()).toEqual({ count: 1 });
+  });
+  it("should throw if schema is async", () => {
+    const store = createStore(
+      "count",
+      v.pipeAsync(
+        v.number(),
+        v.transformAsync(async (count) => {
+          await wait(10);
+          return { count };
+        }),
+      ),
+    );
+    store.set(1);
+    expect(() => store.get()).toThrowError(
+      "Schema validation must be synchronous",
+    );
   });
 });
 

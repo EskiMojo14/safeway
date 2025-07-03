@@ -4,8 +4,7 @@ import * as v from "valibot";
 import { describe, it, expect, beforeEach } from "vitest";
 import type { UnsafeAsyncStorage } from "./async";
 import { buildAsyncStoreCreator, createAsyncStore } from "./async";
-
-const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+import { wait } from "./utils";
 
 describe("createAsyncStore", () => {
   beforeEach(() => {

@@ -44,6 +44,23 @@ store.set(1); // typed based on schema input (number)
 console.log(store.get()); // { count: 1 } - typed based on schema output ({ count: number } | undefined)
 ```
 
+#### Multi-store
+
+If you want to create a store with multiple keys and types, you can use `createMultiStore` instead.
+
+```ts
+import { createMultiStore } from "safeway";
+import { z } from "zod";
+
+const store = createMultiStore({
+  count: z.number(),
+  name: z.string(),
+});
+
+store.set("count", 1); // typed based on schema input (number)
+console.log(store.get("count")); // 1 - typed based on schema output (number | undefined)
+```
+
 #### Custom serialisation
 
 If JSON doesn't cover all your needs, you can provide your own serialisation methods (or use a compatible library like [superjson](https://github.com/blitz-js/superjson)). Should include `parse` and `stringify` methods.
@@ -88,9 +105,11 @@ const createSuperStore = buildStoreCreator({
 const store = createSuperStore("count", z.number());
 ```
 
+`buildStoreCreator` also has a multi-store equivalent, `buildMultiStoreCreator`.
+
 ### Asynchronous Storage
 
-`createStore` requires both storage and schemas to be synchronous. If you need asynchronous storage and/or schemas, use `createAsyncStore` instead.
+`createStore` requires both storage and schemas to be synchronous. If you need asynchronous storage and/or schemas, use `createAsyncStore` instead. (`createMultiStore` also has an asynchronous equivalent, `createAsyncMultiStore`)
 
 The API is the same as `createStore`, but all methods return promises.
 
@@ -112,4 +131,4 @@ await store.remove();
 console.log(await store.get()); // undefined (still typed as number | undefined)
 ```
 
-Supports all the same customisation options as the synchronous storage, but with asynchronous storage methods allowed. A store creator can be built with `buildAsyncStoreCreator`.
+Supports all the same customisation options as the synchronous storage, but with asynchronous storage methods allowed. A store creator can be built with `buildAsyncStoreCreator`. (`buildAsyncMultiStoreCreator` also exists)

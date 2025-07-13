@@ -18,6 +18,7 @@ export default defineConfig({
             enabled: true,
             instances: [{ browser: "chromium" }],
           },
+          includeTaskLocation: true,
         },
       },
       {

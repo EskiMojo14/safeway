@@ -81,7 +81,7 @@
   },
   "dependencies": {
     "@standard-schema/spec": "^1.0.0",
-    "@standard-schema/utils": "^0.3.0",
+    "@standard-schema/utils": "file:../standard-schema/packages/utils",
     "@types/node": "^24.0.10"
   }
 }

@@ -1,6 +1,6 @@
 import type { StandardSchemaV1 } from "@standard-schema/spec";
-import type { StandardSchemaV1Dictionary } from "./standard";
-import { parse } from "./standard";
+import type { StandardSchemaV1Dictionary } from "@standard-schema/utils";
+import { parse } from "@standard-schema/utils";
 import type { MaybePromise, Serializer } from "./types";
 
 export interface UnsafeAsyncStorage {
@@ -45,6 +45,7 @@ export function buildAsyncStoreCreator(
       async get() {
         const value = await storage.getItem(key);
         if (value == null) return;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         return parse(schema, serializer.parse(value));
       },
       async set(value) {
@@ -92,6 +93,7 @@ export function buildAsyncMultiStoreCreator(
         if (!schema) throw new Error(`No schema found for key ${key}`);
         const value = await storage.getItem(key);
         if (value == null) return;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         return parse(schema, serializer.parse(value));
       },
       async set(key, value) {

@@ -2,6 +2,7 @@ import type { StandardSchemaV1 } from "@standard-schema/spec";
 import type { StandardSchemaV1Dictionary } from "./standard";
 import { parse } from "./standard";
 import type { MaybePromise, Serializer } from "./types";
+import { ensureSchema } from "./utils";
 
 export interface UnsafeAsyncStorage {
   getItem(key: string): MaybePromise<string | null | undefined>;
@@ -88,18 +89,17 @@ export function buildAsyncMultiStoreCreator(
     );
     return {
       async get(key) {
-        const schema = schemaDict[key];
-        if (!schema) throw new Error(`No schema found for key ${key}`);
+        const schema = ensureSchema(schemaDict, key);
         const value = await storage.getItem(key);
         if (value == null) return;
         return parse(schema, serializer.parse(value));
       },
       async set(key, value) {
-        if (!schemaDict[key]) throw new Error(`No schema found for key ${key}`);
+        ensureSchema(schemaDict, key);
         await storage.setItem(key, serializer.stringify(value));
       },
       async remove(key) {
-        if (!schemaDict[key]) throw new Error(`No schema found for key ${key}`);
+        ensureSchema(schemaDict, key);
         await storage.removeItem(key);
       },
     };

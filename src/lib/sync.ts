@@ -2,6 +2,7 @@ import type { StandardSchemaV1 } from "@standard-schema/spec";
 import type { StandardSchemaV1Dictionary } from "./standard";
 import { parseSync } from "./standard";
 import type { Serializer } from "./types";
+import { ensureSchema } from "./utils";
 
 export interface UnsafeStorage {
   getItem(key: string): string | null | undefined;
@@ -84,18 +85,17 @@ export function buildMultiStoreCreator(
     );
     return {
       get(key) {
-        const schema = schemaDict[key];
-        if (!schema) throw new Error(`No schema found for key ${key}`);
+        const schema = ensureSchema(schemaDict, key);
         const value = storage.getItem(key);
         if (value == null) return;
         return parseSync(schema, serializer.parse(value));
       },
       set(key, value) {
-        if (!schemaDict[key]) throw new Error(`No schema found for key ${key}`);
+        ensureSchema(schemaDict, key);
         storage.setItem(key, serializer.stringify(value));
       },
       remove(key) {
-        if (!schemaDict[key]) throw new Error(`No schema found for key ${key}`);
+        ensureSchema(schemaDict, key);
         storage.removeItem(key);
       },
     };

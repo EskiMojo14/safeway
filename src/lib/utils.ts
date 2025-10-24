@@ -1,4 +1,4 @@
-import type { StandardSchemaV1Dictionary } from "@standard-schema/utils";
+import type { StandardSchemaV1Dictionary } from "./standard";
 
 export const wait = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));

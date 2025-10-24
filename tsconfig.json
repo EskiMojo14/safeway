@@ -13,7 +13,6 @@
     "module": "ESNext",
     "noEmit": true,
     "lib": ["ES2022", "DOM"],
-    "erasableSyntaxOnly": true,
-    "types": ["@vitest/browser/providers/playwright"]
+    "erasableSyntaxOnly": true
   }
 }
